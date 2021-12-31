@@ -10,31 +10,50 @@ app.use(cors({ optionsSuccessStatus: 200 })); // some legacy browsers choke on 2
 // Timestamp router
 const timestampRouter = express.Router();
 
-timestampRouter.get("/:date", (req, res) => {
-  const regex = /-/;
-  let date = regex.test(req.params.date)
-    ? req.params.date
-    : Number(req.params.date);
+// If Date Parameter is Empty, Return Current Time
+timestampRouter.get("/", (req, res) => {
+  let currentTime = Date.now();
+  let date = new Date(currentTime);
 
-  date = new Date(date);
-
-  const dateObject = {
-    unix: date.getTime(),
+  let message = {
+    unix: currentTime,
     utc: date.toUTCString(),
   };
 
-  res.json(dateObject);
+  res.json(message);
+});
+
+// If Date Parameter Exists
+timestampRouter.get("/:date", (req, res) => {
+  let { date } = req.params;
+  let message;
+
+  // If Date Parameter is Note a Parsable Date String
+  if (!Date.parse(date)) {
+    // Check if the Date Parameter is a Number, Return Date based on UNIX Epoch
+    if (Number(date)) {
+      date = Number(date);
+      date = new Date(date);
+
+      message = {
+        unix: date.getTime(),
+        utc: date.toUTCString(),
+      };
+    } else {
+      message = { error: "Invalid Date" };
+    }
+  } else {
+    // If Date Parameter is a Date String, Return Date
+    date = new Date(date);
+
+    message = {
+      unix: date.getTime(),
+      utc: date.toUTCString(),
+    };
+  }
+  res.json(message);
 });
 
 app.use("/api", timestampRouter);
 
 module.exports = app;
-
-// listen for requests :)
-// const listener = app.listen(3000, () => {
-//   console.log("Your app is listening on port " + listener.address().port);
-// });
-
-// Netlify Serverless Lamda Function
-// const serverless = require("serverless-http");
-// module.exports.handler = serverless(app);

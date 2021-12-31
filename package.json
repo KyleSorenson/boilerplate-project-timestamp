@@ -5,7 +5,7 @@
   "main": "js/server.js",
   "scripts": {
     "start": "nodemon js/server.js",
-    "ntlStart": "sudo ntl dev"
+    "ntlstart": "sudo ntl dev"
   },
   "dependencies": {
     "cors": "^2.8.0",

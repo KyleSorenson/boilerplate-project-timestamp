@@ -16,5 +16,5 @@ const listener = app.listen(3000, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
-const open = require("open");
-open("http://localhost:3000");
+// const open = require("open");
+// open("http://localhost:3000");
